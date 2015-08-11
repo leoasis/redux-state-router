@@ -1,5 +1,5 @@
 import React from 'react';
-import {stateToUrl} from './Route';
+import stateToUrl from '../stateToUrl';
 
 export default class Link extends React.Component {
   static contextTypes = {
@@ -23,6 +23,6 @@ export default class Link extends React.Component {
     this.props.onFollow();
     const nextState = store.getState();
     store.dispatch({type: 'ROUTE_LINK_END'});
-    return stateToUrl(nextState).url;
+    return stateToUrl(nextState);
   }
 }

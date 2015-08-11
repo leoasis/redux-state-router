@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createHistory } from 'history';
-import Router from 'routes';
+import stateToUrl from '../stateToUrl';
+import transitionTo from '../transitionTo';
 
 
 class Route extends React.Component {
@@ -43,30 +44,6 @@ class Route extends React.Component {
   }
 }
 
-const router = Router();
-router.addRoute('/contacts/new', () => ({type: 'ADDING_NEW_CONTACT'}));
-router.addRoute('/contacts/:id', params => ({type: 'SELECT_CONTACT', contactId: params.id}));
-router.addRoute('/contacts', () => ({type: 'SHOW_CONTACTS'}));
-
-function transitionTo(url) {
-  const route = router.match(url);
-  if (route) {
-    return route.fn(route.params);
-  }
-}
-
-export function stateToUrl(state) {
-  let url;
-  if (state.addingNewContact) {
-    url = '/contacts/new';
-  } else if (state.currentContactId) {
-    url = `/contacts/${state.currentContactId}`;
-  } else {
-    url = '/contacts';
-  }
-  return {url};
-}
-
-const RouteContainer = connect(stateToUrl)(Route);
+const RouteContainer = connect(state => ({url: stateToUrl(state)}))(Route);
 
 export default RouteContainer;
