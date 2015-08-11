@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../actionCreators';
 
-import Link from './Link';
+import Link from 'redux-router/components/Link';
 import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import ContactDetails from './ContactDetails';

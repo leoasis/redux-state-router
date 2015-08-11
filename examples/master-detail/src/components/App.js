@@ -4,21 +4,31 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import logger from '../logger';
 import reducer from '../reducer';
-import routerStore from '../routerStore';
+import routerStore from 'redux-router/routerStore';
+import stateToUrl from '../stateToUrl';
+import transitionTo from '../transitionTo';
 
 import ContactPage from './ContactPage';
-import Route from './Route';
+import Location from 'redux-router/components/Location';
 
-class App extends React.Component {
-  render() {
-    return <div>
-      <Route />
-      <ContactPage />
-    </div>;
+const store = routerStore(applyMiddleware(logger, thunk)(createStore))(reducer);
+
+function onUrlChange(url) {
+  const action = transitionTo(url);
+
+  if (action) {
+    store.dispatch(action);
   }
 }
 
-const store = routerStore(applyMiddleware(logger, thunk)(createStore))(reducer);
+class App extends React.Component {
+  render() {
+    return <Location render={stateToUrl} onChange={onUrlChange}>
+      {() => <ContactPage />}
+    </Location>;
+  }
+}
+
 export default class AppProvider extends React.Component {
   render() {
     return <Provider store={store}>

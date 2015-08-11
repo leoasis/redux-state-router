@@ -1,3 +1,4 @@
+var path = require('path');
 var webpack = require('webpack');
 
 var config = {
@@ -10,6 +11,9 @@ var config = {
     publicPath: 'http://localhost:3000/build'
   },
   resolve: {
+    alias: {
+      'redux-router': path.join(__dirname, '..', '..', 'src')
+    },
     extensions: ['', '.js']
   },
   plugins: [

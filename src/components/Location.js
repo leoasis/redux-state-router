@@ -1,13 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createHistory } from 'history';
-import stateToUrl from '../stateToUrl';
-import transitionTo from '../transitionTo';
 
 
 class Route extends React.Component {
+  static childContextTypes = {
+    renderUrl: React.PropTypes.func
+  };
+
   render() {
-    return null;
+    return this.props.children();
+  }
+
+  getChildContext() {
+    return { renderUrl: this.props.render };
   }
 
   componentDidMount() {
@@ -20,10 +26,7 @@ class Route extends React.Component {
         return;
       }
 
-      const action = transitionTo(location.pathname);
-      if (action) {
-        this.props.dispatch(action);
-      }
+      this.props.onChange(location.pathname);
     });
 
     this.silent = true;
@@ -35,15 +38,23 @@ class Route extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.currentPathname === this.props.url) {
+    const { url } = this.props;
+    if (this.currentPathname === url) {
       return;
     }
 
     this.silent = true;
-    this.history.pushState(null, this.props.url);
+    this.history.pushState(null, url);
   }
 }
 
-const RouteContainer = connect(state => ({url: stateToUrl(state)}))(Route);
+function mergeProps(state, actionCreators, props) {
+  return {
+    ...props,
+    url: props.render(state)
+  };
+}
+
+const RouteContainer = connect(s => s, {}, mergeProps)(Route);
 
 export default RouteContainer;

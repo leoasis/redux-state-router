@@ -1,9 +1,8 @@
 import React from 'react';
-import stateToUrl from '../stateToUrl';
-
 export default class Link extends React.Component {
   static contextTypes = {
-    store: React.PropTypes.object
+    store: React.PropTypes.object,
+    renderUrl: React.PropTypes.func,
   };
 
   render() {
@@ -23,6 +22,6 @@ export default class Link extends React.Component {
     this.props.onFollow();
     const nextState = store.getState();
     store.dispatch({type: 'ROUTE_LINK_END'});
-    return stateToUrl(nextState);
+    return this.context.renderUrl(nextState);
   }
 }
